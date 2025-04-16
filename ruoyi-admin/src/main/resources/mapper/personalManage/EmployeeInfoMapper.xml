@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.personalManage.mapper.EmployeeInfoMapper">
+    
+    <resultMap type="EmployeeInfo" id="EmployeeInfoResult">
+        <result property="idCard"    column="id_card"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+        <result property="birthDate"    column="birth_date"    />
+        <result property="estimatedRetireDate"    column="estimated_retire_date"    />
+        <result property="department"    column="department"    />
+        <result property="position"    column="position"    />
+        <result property="isFormal"    column="is_formal"    />
+        <result property="employeeCategory"    column="employee_category"    />
+    </resultMap>
+
+    <sql id="selectEmployeeInfoVo">
+        select id_card, name, gender, birth_date, estimated_retire_date, department, position, is_formal, employee_category from employee_info
+    </sql>
+
+    <select id="selectEmployeeInfoList" parameterType="EmployeeInfo" resultMap="EmployeeInfoResult">
+        <include refid="selectEmployeeInfoVo"/>
+        <where>  
+            <if test="idCard != null  and idCard != ''"> and id_card = #{idCard}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="params.beginBirthDate != null and params.beginBirthDate != '' and params.endBirthDate != null and params.endBirthDate != ''"> and birth_date between #{params.beginBirthDate} and #{params.endBirthDate}</if>
+            <if test="params.beginEstimatedRetireDate != null and params.beginEstimatedRetireDate != '' and params.endEstimatedRetireDate != null and params.endEstimatedRetireDate != ''"> and estimated_retire_date between #{params.beginEstimatedRetireDate} and #{params.endEstimatedRetireDate}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="position != null  and position != ''"> and position = #{position}</if>
+            <if test="isFormal != null  and isFormal != ''"> and is_formal = #{isFormal}</if>
+            <if test="employeeCategory != null "> and employee_category = #{employeeCategory}</if>
+        </where>
+    </select>
+    
+    <select id="selectEmployeeInfoByIdCard" parameterType="String" resultMap="EmployeeInfoResult">
+        <include refid="selectEmployeeInfoVo"/>
+        where id_card = #{idCard}
+    </select>
+
+    <insert id="insertEmployeeInfo" parameterType="EmployeeInfo">
+        insert into employee_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="idCard != null">id_card,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null and gender != ''">gender,</if>
+            <if test="birthDate != null">birth_date,</if>
+            <if test="estimatedRetireDate != null">estimated_retire_date,</if>
+            <if test="department != null and department != ''">department,</if>
+            <if test="position != null and position != ''">position,</if>
+            <if test="isFormal != null and isFormal != ''">is_formal,</if>
+            <if test="employeeCategory != null">employee_category,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="idCard != null">#{idCard},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null and gender != ''">#{gender},</if>
+            <if test="birthDate != null">#{birthDate},</if>
+            <if test="estimatedRetireDate != null">#{estimatedRetireDate},</if>
+            <if test="department != null and department != ''">#{department},</if>
+            <if test="position != null and position != ''">#{position},</if>
+            <if test="isFormal != null and isFormal != ''">#{isFormal},</if>
+            <if test="employeeCategory != null">#{employeeCategory},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEmployeeInfo" parameterType="EmployeeInfo">
+        update employee_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="birthDate != null">birth_date = #{birthDate},</if>
+            <if test="estimatedRetireDate != null">estimated_retire_date = #{estimatedRetireDate},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="position != null and position != ''">position = #{position},</if>
+            <if test="isFormal != null and isFormal != ''">is_formal = #{isFormal},</if>
+            <if test="employeeCategory != null">employee_category = #{employeeCategory},</if>
+        </trim>
+        where id_card = #{idCard}
+    </update>
+
+    <delete id="deleteEmployeeInfoByIdCard" parameterType="String">
+        delete from employee_info where id_card = #{idCard}
+    </delete>
+
+    <delete id="deleteEmployeeInfoByIdCards" parameterType="String">
+        delete from employee_info where id_card in 
+        <foreach item="idCard" collection="array" open="(" separator="," close=")">
+            #{idCard}
+        </foreach>
+    </delete>
+</mapper>

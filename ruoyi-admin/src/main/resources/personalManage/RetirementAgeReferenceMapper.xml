@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.personalManage.mapper.RetirementAgeReferenceMapper">
+    
+    <resultMap type="RetirementAgeReference" id="RetirementAgeReferenceResult">
+        <result property="employeeCategory"    column="employee_category"    />
+        <result property="birthDate"    column="birth_date"    />
+        <result property="standardRetireDate"    column="standard_retire_date"    />
+    </resultMap>
+
+    <sql id="selectRetirementAgeReferenceVo">
+        select employee_category, birth_date, standard_retire_date from retirement_age_reference
+    </sql>
+
+    <select id="selectRetirementAgeReferenceList" parameterType="RetirementAgeReference" resultMap="RetirementAgeReferenceResult">
+        <include refid="selectRetirementAgeReferenceVo"/>
+        <where>  
+            <if test="params.beginStandardRetireDate != null and params.beginStandardRetireDate != '' and params.endStandardRetireDate != null and params.endStandardRetireDate != ''"> and standard_retire_date between #{params.beginStandardRetireDate} and #{params.endStandardRetireDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectRetirementAgeReferenceByEmployeeCategory" parameterType="Long" resultMap="RetirementAgeReferenceResult">
+        <include refid="selectRetirementAgeReferenceVo"/>
+        where employee_category = #{employeeCategory}
+    </select>
+
+    <insert id="insertRetirementAgeReference" parameterType="RetirementAgeReference">
+        insert into retirement_age_reference
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeCategory != null">employee_category,</if>
+            <if test="birthDate != null">birth_date,</if>
+            <if test="standardRetireDate != null">standard_retire_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeCategory != null">#{employeeCategory},</if>
+            <if test="birthDate != null">#{birthDate},</if>
+            <if test="standardRetireDate != null">#{standardRetireDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRetirementAgeReference" parameterType="RetirementAgeReference">
+        update retirement_age_reference
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="birthDate != null">birth_date = #{birthDate},</if>
+            <if test="standardRetireDate != null">standard_retire_date = #{standardRetireDate},</if>
+        </trim>
+        where employee_category = #{employeeCategory}
+    </update>
+
+    <delete id="deleteRetirementAgeReferenceByEmployeeCategory" parameterType="Long">
+        delete from retirement_age_reference where employee_category = #{employeeCategory}
+    </delete>
+
+    <delete id="deleteRetirementAgeReferenceByEmployeeCategorys" parameterType="String">
+        delete from retirement_age_reference where employee_category in 
+        <foreach item="employeeCategory" collection="array" open="(" separator="," close=")">
+            #{employeeCategory}
+        </foreach>
+    </delete>
+</mapper>
