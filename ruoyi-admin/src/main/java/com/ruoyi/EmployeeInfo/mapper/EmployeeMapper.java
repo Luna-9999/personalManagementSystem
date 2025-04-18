@@ -7,7 +7,8 @@ import com.ruoyi.EmployeeInfo.domain.Employee;
  * 职工基本信息Mapper接口
  * 
  * @author carmellia
- * @date 2025-04-14
+ * @contributor Luna-9999
+ * @date 2025-04-18
  */
 public interface EmployeeMapper 
 {
@@ -58,4 +59,12 @@ public interface EmployeeMapper
      * @return 结果
      */
     public int deleteEmployeeByIds(Long[] ids);
+
+    /**
+     * 根据身份证号查询职工基本信息
+     * 
+     * @param idNumber 身份证号码
+     * @return 职工基本信息
+     */
+    public Employee selectEmployeeByIdNumber(String idNumber);
 }

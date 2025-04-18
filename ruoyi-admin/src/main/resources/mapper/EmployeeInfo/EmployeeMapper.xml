@@ -41,6 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectEmployeeByIdNumber" parameterType="String" resultMap="EmployeeResult">
+        <include refid="selectEmployeeVo"/>
+        where id_number = #{idNumber}
+    </select>
+
     <insert id="insertEmployee" parameterType="Employee" useGeneratedKeys="true" keyProperty="id">
         insert into employee
         <trim prefix="(" suffix=")" suffixOverrides=",">

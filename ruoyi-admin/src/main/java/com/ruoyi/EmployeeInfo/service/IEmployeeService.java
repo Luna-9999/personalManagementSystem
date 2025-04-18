@@ -7,7 +7,8 @@ import com.ruoyi.EmployeeInfo.domain.Employee;
  * 职工基本信息Service接口
  * 
  * @author carmellia
- * @date 2025-04-14
+ * @contributor Luna-9999
+ * @date 2025-04-18
  */
 public interface IEmployeeService 
 {
@@ -58,4 +59,14 @@ public interface IEmployeeService
      * @return 结果
      */
     public int deleteEmployeeById(Long id);
+
+    /**
+     * 导入职工数据
+     * 
+     * @param employeeList 职工数据列表
+     * @param updateSupport 是否支持更新
+     * @param operName 操作人
+     * @return 结果
+     */
+    public String importEmployee(List<Employee> employeeList, boolean updateSupport, String operName);
 }

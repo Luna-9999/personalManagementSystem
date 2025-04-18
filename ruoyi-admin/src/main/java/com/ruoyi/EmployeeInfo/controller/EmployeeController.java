@@ -20,12 +20,14 @@ import com.ruoyi.EmployeeInfo.domain.Employee;
 import com.ruoyi.EmployeeInfo.service.IEmployeeService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 职工基本信息Controller
  * 
  * @author carmellia
- * @date 2025-04-14
+ * @contributor Luna-9999
+ * @date 2025-04-18
  */
 @RestController
 @RequestMapping("/EmployeeInfo/Employee")
@@ -100,5 +102,31 @@ public class EmployeeController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(employeeService.deleteEmployeeByIds(ids));
+    }
+
+    /**
+     * 导入职工基本信息
+     */
+    @PreAuthorize("@ss.hasPermi('EmployeeInfo:Employee:import')")
+    @Log(title = "职工基本信息", businessType = BusinessType.IMPORT)
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<Employee> util = new ExcelUtil<Employee>(Employee.class);
+        List<Employee> employeeList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = employeeService.importEmployee(employeeList, updateSupport, operName);
+        return success(message);
+    }
+
+    /**
+     * 下载导入模板
+     */
+    @PreAuthorize("@ss.hasPermi('EmployeeInfo:Employee:import')")
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<Employee> util = new ExcelUtil<Employee>(Employee.class);
+        util.importTemplateExcel(response, "职工数据");
     }
 }
